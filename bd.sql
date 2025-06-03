@@ -1,8 +1,6 @@
 Create database TourBD
-drop database TourBD
-
-Select * from usuarios 
-
+USE TourBD
+    
 CREATE TABLE usuarios (
     id INT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,

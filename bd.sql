@@ -14,38 +14,38 @@ CREATE TABLE usuarios (
 
 CREATE TABLE ofertas (
     id INT PRIMARY KEY IDENTITY(1,1),
-    titulo VARCHAR(100),
-    descripcion TEXT,
-    image_url VARCHAR(255),
-    detalles TEXT,
-    itinerario TEXT,
-    precio DECIMAL(10,2)
+    titulo VARCHAR(100) NOT NULL,
+    descripcion TEXT NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
+    detalles TEXT NOT NULL,
+    itinerario TEXT NOT NULL,
+    precio DECIMAL(10,2) NOT NULL
 );
 
 CREATE TABLE pagos (
     id INT PRIMARY KEY IDENTITY(1,1),
-    metodo_pago VARCHAR(100),
-    estado_pago VARCHAR(100),
-    monto DECIMAL(10,2)
+    metodo_pago VARCHAR(100) NOT NULL,
+    estado_pago VARCHAR(100) NOT NULL,
+    monto DECIMAL(10,2) NOT NULL
 );
 
 CREATE TABLE contactos (
     id INT PRIMARY KEY IDENTITY(1,1),
-    nombre VARCHAR(100),
-    email VARCHAR(100),
-    mensaje TEXT
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    mensaje TEXT NOT NULL
 );
 
 CREATE TABLE reservas (
     id INT PRIMARY KEY IDENTITY(1,1),
-    nombre_completo VARCHAR(100),
-    email VARCHAR(100),
-    telefono VARCHAR(20),
-    id_tour INT,
-    id_usuario INT,
-    id_pago INT,
-    fecha_reserva DATE,
-    cantidad_personas INT,
+    nombre_completo VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20) NOT NULL,
+    id_tour INT NOT NULL,
+    id_usuario INT NOT NULL,
+    id_pago INT NOT NULL,
+    fecha_reserva DATE NOT NULL,
+    cantidad_personas INT NOT NULL,
 
     FOREIGN KEY (id_tour) REFERENCES ofertas(id),
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id),

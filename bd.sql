@@ -49,7 +49,6 @@ CREATE TABLE reservas (
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
     FOREIGN KEY (id_pago) REFERENCES pagos(id)
 );
-<<<<<<< HEAD
 
 --TABLA USUSARIOS
 CREATE PROCEDURE SP_INSERTAR_USUARIOS

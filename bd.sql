@@ -38,6 +38,8 @@ CREATE TABLE IF NOT EXISTS contactos (
     mensaje TEXT NOT NULL
 );
 
+
+
 -- reservas
 CREATE TABLE IF NOT EXISTS reservas (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -47,40 +49,43 @@ CREATE TABLE IF NOT EXISTS reservas (
     id_tour INT NOT NULL,
     id_usuario INT NOT NULL,
     id_pago INT NOT NULL,
-    fecha_reserva DATE NOT NULL,
+    fecha_reserva TEXT NOT NULL,
     cantidad_personas INT NOT NULL,
     FOREIGN KEY (id_tour) REFERENCES ofertas(id),
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
     FOREIGN KEY (id_pago) REFERENCES pagos(id)
 );
+
 DELIMITER //
+
+-- Stored Procedures Definitions:
 
 -- usuarios
 CREATE PROCEDURE SP_INSERTAR_USUARIOS (
     IN nombre VARCHAR(255), 
     IN email VARCHAR(255), 
     IN password_hash VARCHAR(255), 
-    IN tipo VARCHAR(50), 
-    IN creado_en DATETIME
+    IN tipo VARCHAR(50)
 )
 BEGIN
-    INSERT INTO usuarios(nombre, email, password_hash, tipo, creado_en)
-    VALUES (nombre, email, password_hash, tipo, creado_en);
+    INSERT INTO usuarios(nombre, email, password_hash, tipo)
+    VALUES (nombre, email, password_hash, tipo);
 END;
 //
+
+SELECT * FROM pagos
 
 CREATE PROCEDURE SP_ACTUALIZAR_USUARIOS (
     IN nombre VARCHAR(255), 
     IN email VARCHAR(255), 
     IN password_hash VARCHAR(255), 
     IN tipo VARCHAR(50), 
-    IN creado_en DATETIME,
-    IN id INT
+    IN id_usuario INT
 )
 BEGIN
     UPDATE usuarios 
-    SET nombre = nombre, email = email, password_hash = password_hash, tipo = tipo, creado_en = creado_en
-    WHERE id = id;
+    SET nombre = nombre, email = email, password_hash = password_hash, tipo = tipo
+    WHERE id = id_usuario;
 END;
 //
 
@@ -90,11 +95,20 @@ BEGIN
 END;
 //
 
-CREATE PROCEDURE SP_ELIMINAR_USUARIOS (
-    IN id INT
+CREATE PROCEDURE SP_LEER_USUARIOS_U (
+	IN nombre_usuario VARCHAR(255),
+	IN cont VARCHAR(255)
 )
 BEGIN
-    DELETE FROM usuarios WHERE id = id;
+    SELECT * FROM usuarios WHERE nombre = nombre_usuario AND password_hash = cont;
+END;
+//
+
+CREATE PROCEDURE SP_ELIMINAR_USUARIOS (
+    IN id_usuario INT
+)
+BEGIN
+    DELETE FROM usuarios WHERE id = id_usuario;
 END;
 //
 
@@ -120,12 +134,12 @@ CREATE PROCEDURE SP_ACTUALIZAR_OFERTAS (
     IN detalles TEXT, 
     IN itinerario TEXT,
     IN precio DECIMAL(10,2),
-    IN id INT
+    IN id_oferta INT
 )
 BEGIN
     UPDATE ofertas 
     SET titulo = titulo, descripcion = descripcion, image_url = image_url, detalles = detalles, itinerario = itinerario, precio = precio
-    WHERE id = id;
+    WHERE id = id_oferta;
 END;
 //
 
@@ -135,11 +149,20 @@ BEGIN
 END;
 //
 
-CREATE PROCEDURE SP_ELIMINAR_OFERTAS (
-    IN id INT
+
+CREATE PROCEDURE SP_LEER_OFERTAS_ID (
+	IN id_oferta INT
 )
 BEGIN
-    DELETE FROM ofertas WHERE id = id;
+    SELECT * FROM ofertas WHERE id = id_oferta;
+END;
+//
+
+CREATE PROCEDURE SP_ELIMINAR_OFERTAS (
+    IN id_oferta INT
+)
+BEGIN
+    DELETE FROM ofertas WHERE id = id_oferta;
 END;
 //
 
@@ -155,16 +178,18 @@ BEGIN
 END;
 //
 
+SELECT * FROM pagos
+
 CREATE PROCEDURE SP_ACTUALIZAR_PAGOS (
     IN metodo_pago VARCHAR(100),
     IN estado_pago VARCHAR(100),
     IN monto DECIMAL(10,2),
-    IN id INT
+    IN id_pago INT
 )
 BEGIN
     UPDATE pagos 
     SET metodo_pago = metodo_pago, estado_pago = estado_pago, monto = monto
-    WHERE id = id;
+    WHERE id = id_pago;
 END;
 //
 
@@ -174,11 +199,20 @@ BEGIN
 END;
 //
 
-CREATE PROCEDURE SP_ELIMINAR_PAGOS (
-    IN id INT
+DELIMITER //
+CREATE PROCEDURE SP_LEER_PAGOS_ID (
+	IN monto_in DECIMAL(10,2)
 )
 BEGIN
-    DELETE FROM pagos WHERE id = id;
+    SELECT id FROM pagos WHERE monto = monto_in;
+END;
+//
+
+CREATE PROCEDURE SP_ELIMINAR_PAGOS (
+    IN id_pago INT
+)
+BEGIN
+    DELETE FROM pagos WHERE id = id_pago;
 END;
 //
 
@@ -198,12 +232,12 @@ CREATE PROCEDURE SP_ACTUALIZAR_CONTACTOS (
     IN nombre VARCHAR(100),
     IN email VARCHAR(100),
     IN mensaje TEXT,
-    IN id INT
+    IN id_contacto INT
 )
 BEGIN
     UPDATE contactos 
     SET nombre = nombre, email = email, mensaje = mensaje
-    WHERE id = id;
+    WHERE id = id_contacto;
 END;
 //
 
@@ -214,10 +248,10 @@ END;
 //
 
 CREATE PROCEDURE SP_ELIMINAR_CONTACTOS (
-    IN id INT
+    IN id_contacto INT
 )
 BEGIN
-    DELETE FROM contactos WHERE id = id;
+   DELETE FROM contactos WHERE id = id_contacto;
 END;
 //
 
@@ -229,7 +263,7 @@ CREATE PROCEDURE SP_INSERTAR_RESERVAS (
     IN id_tour INT,
     IN id_usuario INT,
     IN id_pago INT,
-    IN fecha_reserva DATE,
+    IN fecha_reserva TEXT,
     IN cantidad_personas INT
 )
 BEGIN
@@ -247,13 +281,13 @@ CREATE PROCEDURE SP_ACTUALIZAR_RESERVAS (
     IN id_pago INT,
     IN fecha_reserva DATE,
     IN cantidad_personas INT,
-    IN id INT
+    IN id_reserva INT
 )
 BEGIN
     UPDATE reservas 
     SET nombre_completo = nombre_completo, email = email, telefono = telefono, id_tour = id_tour, 
         id_usuario = id_usuario, id_pago = id_pago, fecha_reserva = fecha_reserva, cantidad_personas = cantidad_personas
-    WHERE id = id;
+    WHERE id = id_reserva;
 END;
 //
 
@@ -264,10 +298,21 @@ END;
 //
 
 CREATE PROCEDURE SP_ELIMINAR_RESERVAS (
-    IN id INT
+    IN id_reserva INT
 )
 BEGIN
-    DELETE FROM reservas WHERE id = id;
+    DELETE FROM reservas WHERE id = id_reserva;
 END;
 //
 DELIMITER ;
+
+-- Calls to stored procedures
+CALL SP_INSERTAR_CONTACTOS("Prueba", "prueba@email.com", "Esto es un mensaje de prueba");
+CALL SP_INSERTAR_CONTACTOS("Prueba2", "prueba2@email.com", "Esto es un mensaje de prueba");
+CALL SP_INSERTAR_CONTACTOS("Prueba3", "prueba3@email.com", "Esto es un mensaje de prueba");
+CALL SP_INSERTAR_CONTACTOS("Prueba4", "prueba4@email.com", "Esto es un mensaje de prueba");
+
+CALL SP_INSERTAR_USUARIOS("Admin", "admin@reflex.dev", "123456", "admin");
+
+-- Check inserted data
+SELECT * FROM contactos;
